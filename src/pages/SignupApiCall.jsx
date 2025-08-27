@@ -5,6 +5,9 @@ import {
     Typography,
     Box,
     Paper,
+    Button,
+    Divider,
+    Link,
 
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
@@ -13,7 +16,28 @@ import axios from 'axios';
 
 const SignupApiCall = () => {
 
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YTcwNTk0YTE0OWFmMjY1OTBjN2E5NyIsImlhdCI6MTc1NTc3NjU2Nn0.gqEW6zR7Guo9As3AAY_nwSaVCbHuz8KOFbkLTlVweg8"
+    const [fileName, setFileName] = useState('');
+
+    const handleChange = (e) => {
+        // console.log(e.target.files[0]);
+
+        setFileName(e.target.files[0]);
+
+    };
+
+    const [isHovered, setIsHovered] = useState(false);
+    const buttonStyle = {
+        backgroundColor: isHovered ? '#15c03aff' : '#0da150ff', // darker on hover
+        color: '#fff',
+        padding: "10px 30px",
+        border: "none",
+        borderRadius: "5px",
+        fontSize: "20px",
+        cursor: "pointer",
+        transition: "background-color 0.3s ease"
+    };
+
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YWVmMzhmMDFkNGExNjU2ZTFjOGQ3MCIsImlhdCI6MTc1NjI5NjEyNX0.AbbpoLjjh5HNrrRkXzwAqE8mDb-O9u9COzmXIUCTDKI"
 
     const [list, setList] = useState([])
     const [ini, setIni] = useState({
@@ -49,9 +73,9 @@ const SignupApiCall = () => {
     }
 
 
-    const handleSubmit = (vaules, { resetForm }) => {
+    const handleSubmit = (values, { resetForm }) => {
 
-        const { _id, ...rest } = vaules
+        const { _id, ...rest } = values
 
 
         if (editId != null) {
@@ -71,10 +95,18 @@ const SignupApiCall = () => {
 
                     })
                 })
+
+                .catch((error)=>{
+                    console.log(error);
+                    
+                })
         }
 
         else {
-            axios.post("http://localhost:3000/signup", vaules, {
+
+            values.profile = fileName
+
+            axios.post("http://localhost:3000/signup", values, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -84,6 +116,7 @@ const SignupApiCall = () => {
 
                     resetForm()
                     viewData()
+                    setFileName('')
                 })
 
                 .catch((error) => {
@@ -144,7 +177,7 @@ const SignupApiCall = () => {
 
                     <Box sx={{ textAlign: "center" }}>
                         <Formik
-
+                            enableReinitialize
                             initialValues={ini}
                             onSubmit={handleSubmit}
                         >
@@ -171,48 +204,50 @@ const SignupApiCall = () => {
 
                                     <Field name="password"
                                         as={TextField}
-                                        label="Password"
+                                        label="Create Password"
                                         fullWidth
                                         variant="outlined"
                                         margin="normal"></Field><br />
 
 
                                     <label htmlFor="profile" style={{
-                                        display: 'flex',
-                                        padding: '15px 20px',
+                                        display: 'block',
+                                        width: '100%',
+                                        padding: '10px 20px',
                                         backgroundColor: '#1976d2',
                                         color: 'white',
                                         borderRadius: '4px',
                                         cursor: 'pointer',
-                                        marginTop: '10px',
-
+                                        fontSize: '16px',
+                                        marginTop: '16px',
+                                        boxSizing: 'border-box'
                                     }}>
                                         Upload Profile
                                     </label>
 
                                     <input
                                         type="file"
-                                        name="profile"
                                         id="profile"
                                         style={{ display: 'none' }}
-                                        onChange={(e) => setFieldValue("profile", e.target.files[0])}
+                                        //onChange={(e) => setFieldValue("profile", e.target.files[0])}
+                                        onChange={handleChange}
                                     />
                                     <br /><br />
 
-                                    <button type="submit" fullWidth
+                                    {fileName.name && (
+                                        <div style={{ marginTop: '10px' }}>
+                                            Selected file: <strong>{fileName.name}</strong>
+                                        </div>
+                                    )}
 
-
-                                        style={{
-                                            backgroundColor: '#0d47a1',
-                                            color: '#fff',
-                                            padding: "10px 30px",
-                                            border: "none",
-                                            borderRadius: "5px",
-                                            fontSize: "20px",
-
-                                        }}
-
-                                    >Create</button>
+                                    <button
+                                        type="submit"
+                                        style={buttonStyle}
+                                        onMouseEnter={() => setIsHovered(true)}
+                                        onMouseLeave={() => setIsHovered(false)}
+                                    >
+                                        Create
+                                    </button>
 
 
                                 </Form>
@@ -220,7 +255,14 @@ const SignupApiCall = () => {
 
                         </Formik>
 
+                        <Typography variant="h6" component="h2" sx={{ fontSize: "14px", margin: "15px 0" }}>
+                            By clicking the sign up button, you agree to our <a href="">Terms and Conditions</a> and <a href="">Policy and Privacy</a>.
+                        </Typography>
+                    </Box>
 
+                    <Box sx={{ margin: "15px 0" }}>
+
+                        <Divider sx={{ fontSize: "14px" }}>Already have an account? <Link href="#" sx={{ color: "#0da150ff", textDecoration: "none", fontSize: "16px" }}>Login here</Link></Divider>
                     </Box>
 
 
@@ -237,6 +279,7 @@ const SignupApiCall = () => {
                     <th>Password</th>
                     <th>Profile</th>
                     <th>Delete</th>
+                    <th>Edit</th>
                 </tr>
 
                 {
