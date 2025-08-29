@@ -37,7 +37,7 @@ const SignupApiCall = () => {
         transition: "background-color 0.3s ease"
     };
 
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YWVmMzhmMDFkNGExNjU2ZTFjOGQ3MCIsImlhdCI6MTc1NjI5NjEyNX0.AbbpoLjjh5HNrrRkXzwAqE8mDb-O9u9COzmXIUCTDKI"
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YjE4ZGE1ODRmZmM2MzNmOGIwZTQ2NSIsImlhdCI6MTc1NjQ2NjYzMn0.xqRJt7lc3SB0PssyoKz4tnvs7m6uDJI2kt2nx3fXCxk"
 
     const [list, setList] = useState([])
     const [ini, setIni] = useState({
@@ -54,6 +54,9 @@ const SignupApiCall = () => {
     }, [])
 
     const viewData = () => {
+
+        console.log("view data token ==> ", token);
+
         axios.get("http://localhost:3000/signup", {
             headers: {
                 Authorization: token
@@ -79,14 +82,19 @@ const SignupApiCall = () => {
 
 
         if (editId != null) {
-            axios.patch(`https://localhost:3000/signup/${editId}`, rest, {
+            axios.patch(`http://localhost:3000/signup/${editId}`, rest, {
                 headers: {
-                    Authorization: token
+                    Authorization: token,
+                    'Content-Type': 'multipart/form-data'
+
                 }
             })
+
                 .then((res) => {
+
                     viewData()
                     setEditId(null)
+
                     setIni({
                         name: "",
                         email: "",
@@ -96,10 +104,13 @@ const SignupApiCall = () => {
                     })
                 })
 
-                .catch((error)=>{
+                .catch((error) => {
                     console.log(error);
-                    
+
                 })
+
+            console.log("==>", rest);
+
         }
 
         else {
@@ -128,6 +139,10 @@ const SignupApiCall = () => {
     }
 
     const deleteData = (deleteId) => {
+
+        console.log("token ==> ", token);
+
+
         axios.delete(`http://localhost:3000/signup/${deleteId}`, {
             headers: {
                 Authorization: token
@@ -214,8 +229,8 @@ const SignupApiCall = () => {
                                         display: 'block',
                                         width: '100%',
                                         padding: '10px 20px',
-                                        backgroundColor: '#1976d2',
-                                        color: 'white',
+                                        backgroundColor: '#70a3d7',
+                                        color: 'black',
                                         borderRadius: '4px',
                                         cursor: 'pointer',
                                         fontSize: '16px',
@@ -232,14 +247,14 @@ const SignupApiCall = () => {
                                         //onChange={(e) => setFieldValue("profile", e.target.files[0])}
                                         onChange={handleChange}
                                     />
-                                    <br /><br />
+
 
                                     {fileName.name && (
                                         <div style={{ marginTop: '10px' }}>
                                             Selected file: <strong>{fileName.name}</strong>
                                         </div>
                                     )}
-
+                                    <br /><br />
                                     <button
                                         type="submit"
                                         style={buttonStyle}
@@ -262,7 +277,7 @@ const SignupApiCall = () => {
 
                     <Box sx={{ margin: "15px 0" }}>
 
-                        <Divider sx={{ fontSize: "14px" }}>Already have an account? <Link href="#" sx={{ color: "#0da150ff", textDecoration: "none", fontSize: "16px" }}>Login here</Link></Divider>
+                        <Divider sx={{ fontSize: "14px" }}>Already have an account? <Link href="/loginPage" sx={{ color: "#0da150ff", fontSize: "16px" }}>Login here</Link></Divider>
                     </Box>
 
 
