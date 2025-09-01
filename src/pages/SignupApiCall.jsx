@@ -102,6 +102,7 @@ const SignupApiCall = () => {
                         profile: ""
 
                     })
+                    setFileName('')
                 })
 
                 .catch((error) => {
@@ -124,7 +125,6 @@ const SignupApiCall = () => {
             })
                 .then(() => {
                     console.log("Data added successfully");
-
                     resetForm()
                     viewData()
                     setFileName('')

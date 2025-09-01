@@ -22,7 +22,6 @@ function App() {
         </Route>
         <Product></Product>
         <Route path='/product'>
-          
         </Route>
       </Switch>
     </Router>

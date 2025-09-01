@@ -1,7 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
-  Box,
-  Button,
   Container,
   TextField,
   Typography,
@@ -9,30 +7,38 @@ import {
   Divider,
   Link,
 } from '@mui/material';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import InstagramIcon from '@mui/icons-material/Instagram';
+
+import { useHistory } from 'react-router-dom';
+
 import { Field, Form, Formik } from 'formik';
+import axios from 'axios';
 
 const LoginApiCall = () => {
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const email = data.get('email');
-    const password = data.get('password');
+  const history = useHistory();
+  const [ini, setIni] = useState({
+    email: "",
+    password: ""
+  })
 
-    // Handle login logic here
-    console.log({ email, password });
+  const handleSubmit = (values, { resetForm }) => {
+    axios.post("http://localhost:3000/signup/login", values)
+      .then((res) => {
+        console.log("Login Successful");
+        resetForm()
+        history.push('/product');
 
+      })
 
+      .catch((error) => {
+        console.log(error);
 
-
-
-
-
+      })
   }
+
+
   return (
-    
+
     <Container component="main" maxWidth="xs">
       <Paper elevation={3} sx={{ padding: 4, marginTop: 8, background: 'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)', }}>
         <Typography sx={{
@@ -42,30 +48,28 @@ const LoginApiCall = () => {
           Login
         </Typography>
 
-
-
-        <Formik>
+        <Formik
+          enableReinitialize
+          initialValues={ini}
+          onSubmit={handleSubmit}
+        >
           <Form>
-            <Field name="email" component={TextField}
-              margin="normal"
-              required
+            <Field name="email"
+              as={TextField}
+              label="Email"
               fullWidth
-              id="email"
-              label="Email Address"
+              variant="outlined"
+              margin="normal"></Field><br />
 
-              type="email"
-              autoComplete="email"
-              autoFocus></Field>
-            <Field
-              component={TextField}
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
+
+
+            <Field name="password"
+              as={TextField}
+              label="Create Password"
               type="password"
-              id="password"
-              autoComplete="current-password"></Field>
+              fullWidth
+              variant="outlined"
+              margin="normal"></Field><br />
             <br /><br />
 
             <button type="submit" style={{ borderRadius: "5px", fontWeight: "500", backgroundColor: "#1d85eb", border: "none", width: "100%", padding: "10px", fontSize: "16px" }} >Submit</button>
@@ -80,5 +84,6 @@ const LoginApiCall = () => {
     </Container>
   )
 }
+
 
 export default LoginApiCall
