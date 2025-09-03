@@ -3,11 +3,10 @@ import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import React, { useEffect, useState } from 'react'
 import DeleteIcon from '@mui/icons-material/Delete';
-import PixIcon from '@mui/icons-material/Pix';
+import EditIcon from '@mui/icons-material/Edit';
 
 const Product = () => {
-  const [hover, setHover] = useState(false);
-  const [hover1, setHover1] = useState(false);
+
   const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4YjE4ZGE1ODRmZmM2MzNmOGIwZTQ2NSIsImlhdCI6MTc1NjQ2NjYzMn0.xqRJt7lc3SB0PssyoKz4tnvs7m6uDJI2kt2nx3fXCxk"
 
   const [ini, setIni] = useState({
@@ -47,6 +46,8 @@ const Product = () => {
 
         resetForm()
         setIni({
+          name: "",
+          price: "",
           images: ""
         })
         viewData()
@@ -58,7 +59,26 @@ const Product = () => {
   }
 
 
+  const deleteData = (deleteId) => {
+    console.log("==>", deleteId);
+    console.log("token my==> ", token);
+    axios.delete(`http://localhost:3000/product/${deleteId}`, {
+      headers: {
+        Authorization: token
+      }
+    })
+      .then((res) => {
+        console.log("Product Delete Successfully");
+        viewData()
 
+
+      })
+      .catch((error) => {
+        console.log(error);
+
+      })
+
+  }
 
 
 
@@ -80,16 +100,42 @@ const Product = () => {
         <Divider sx={{ mt: 1, mb: 2, width: '60%', mx: 'auto' }} />
 
         <Formik
+          enableReinitialize
           initialValues={ini}
           onSubmit={handleSubmit}
         >
           {({ setFieldValue }) => (
-            <Form encType='multipart/form-data'>
-              <Field name="name"></Field>
-              <Field name="price"></Field>
-              <input type="file" name="images" id="" onClick={(e) => setFieldValue("images", e.target.files[0])} />
-              <button type="submit">Add</button>
-            </Form>
+            <div className="form-page">
+              <h2>Add Product</h2>
+              <Form encType="multipart/form-data" className="form-container">
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="name">Name:</label>
+                    <Field name="name" className="form-input" />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="price">Price:</label>
+                    <Field name="price" className="form-input" />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="images">Image:</label>
+                  <input
+                    type="file"
+                    name="images"
+                    id=""
+
+                    onClick={(e) => setFieldValue("images", e.target.files[0])}
+                    className="form-input"
+                  />
+                </div>
+
+                <button type="submit" className="submit-button">Add</button>
+              </Form>
+            </div>
           )}
         </Formik>
 
@@ -126,20 +172,9 @@ const Product = () => {
                           : <em>No Image</em>
                       }
                     </TableCell>
-                    <TableCell><button className='hover'><DeleteIcon sx={{ fontSize: "28px" }} /></button></TableCell>
+                    <TableCell><button className='hover-bin' onClick={() => deleteData(item._id)}><DeleteIcon sx={{ fontSize: "28px" }} /></button></TableCell>
 
-                    <TableCell><button onMouseEnter={() => setHover1(true)}
-                      onMouseLeave={() => setHover1(false)}
-                      style={{
-                        color: '#002f96ff',
-                        backgroundColor: hover1 ? 'rgba(0, 38, 255, 0.1)' : 'transparent',
-                        border: 'none',
-                        cursor: 'pointer',
-                        transform: hover1 ? 'scale(1.2)' : 'scale(1)',
-                        transition: 'all 0.3s ease',
-                        padding: '8px',
-                        borderRadius: '50%',
-                      }}><PixIcon sx={{ fontSize: "28px" }} /></button></TableCell>
+                    <TableCell><button className='hover-edit'><EditIcon sx={{ fontSize: "28px" }} /></button></TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -148,25 +183,7 @@ const Product = () => {
 
         </Box>
 
-        {/* <table border={1}>
-          <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Images</th>
-          </tr>
 
-          {
-            list.map((item, index) => (
-              <tr>
-                <td>{index + 1}</td>
-                <td>{item.name}</td>
-                <td>{item.price}</td>
-                <td>{item.images}</td>
-              </tr>
-            ))
-          }
-        </table> */}
       </Box>
     </>
   )

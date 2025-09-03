@@ -22,10 +22,17 @@ const LoginApiCall = () => {
   })
 
   const handleSubmit = (values, { resetForm }) => {
+    
     axios.post("http://localhost:3000/signup/login", values)
       .then((res) => {
+
+
         console.log("Login Successful");
+
+        console.log("res", res);
+
         resetForm()
+  
         history.push('/product');
 
       })

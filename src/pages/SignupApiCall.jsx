@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { Field, Form, Formik } from 'formik';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 
 const SignupApiCall = () => {
@@ -48,6 +49,7 @@ const SignupApiCall = () => {
     })
     const [editId, setEditId] = useState(null)
 
+    const history = useHistory()
 
     useEffect(() => {
         viewData()
@@ -103,6 +105,7 @@ const SignupApiCall = () => {
 
                     })
                     setFileName('')
+
                 })
 
                 .catch((error) => {
@@ -128,6 +131,8 @@ const SignupApiCall = () => {
                     resetForm()
                     viewData()
                     setFileName('')
+                    history.push('/loginPage');
+
                 })
 
                 .catch((error) => {
